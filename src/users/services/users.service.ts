@@ -46,6 +46,8 @@ export class UsersService extends BaseService<User> {
     if (updateUserDto.password) {
       updateUserDto.password = await hashPassword(updateUserDto.password);
     }
+    // Object.assign copie les propriété présentes dans updatesDTO vers l'objet user récupéré depuis la base
+    // donc il met à jour les champs que l'utilisateur a voulu modifier
     Object.assign(user, updateUserDto);
     await this.userRepository.save(user);
     return { message: 'User updated successfully', user };
