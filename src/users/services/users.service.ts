@@ -14,7 +14,9 @@ export class UsersService extends BaseService<User> {
   ) {
     super(userRepository);
   }
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(
+    createUserDto: CreateUserDto,
+  ): Promise<{ message: string; user: User }> {
     const existing = await this.userRepository.findOneBy({
       email: createUserDto.email,
     });
@@ -28,6 +30,18 @@ export class UsersService extends BaseService<User> {
       ...createUserDto,
       password: hashedPassword,
     });
-    return this.userRepository.save(user);
+    await this.userRepository.save(user);
+
+    return { message: 'User created successfully', user };
+  }
+
+  async deleteUser(id: number): Promise<{ message: string }> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new ConflictException(`User with id ${id} does not exist`);
+    }
+
+    await this.userRepository.delete(id);
+    return { message: 'User deleted successfully' };
   }
 }
