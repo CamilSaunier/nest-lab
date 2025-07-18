@@ -35,6 +35,22 @@ export class UsersService extends BaseService<User> {
     return { message: 'User created successfully', user };
   }
 
+  async updateUser(
+    id: number,
+    updateUserDto: Partial<CreateUserDto>,
+  ): Promise<{ message: string; user: User }> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new ConflictException(`User with id ${id} does not exist`);
+    }
+    if (updateUserDto.password) {
+      updateUserDto.password = await hashPassword(updateUserDto.password);
+    }
+    Object.assign(user, updateUserDto);
+    await this.userRepository.save(user);
+    return { message: 'User updated successfully', user };
+  }
+
   async deleteUser(id: number): Promise<{ message: string }> {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
