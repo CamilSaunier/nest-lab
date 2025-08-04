@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { PublicationsModule } from './publications/publications.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PublicationsModule } from './publications/publications.module';
       synchronize: true,
       autoLoadEntities: true, // optionnel, mais pratique
     }),
+    AuthModule,
     UsersModule,
     PublicationsModule,
   ],

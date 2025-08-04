@@ -14,7 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class UsersService extends BaseService<User> {
   constructor(
     @InjectRepository(User)
-    protected readonly userRepository: Repository<User>,
+    public userRepository: Repository<User>,
   ) {
     super(userRepository);
   }
