@@ -23,7 +23,7 @@ export class UsersController {
   //requête GET pour récupérer un utilisateur par son ID
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOneBy({ id: +id });
   }
   //requête POST pour créer un nouvel utilisateur
   @Post()

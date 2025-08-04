@@ -15,6 +15,39 @@ export class UsersService extends BaseService<User> {
     super(userRepository);
   }
 
+  async findAll(): Promise<any[]> {
+    const users = await super.findAll(['publications']);
+    return users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      publications: user.publications.map((pub) => ({
+        id: pub.id,
+        title: pub.title,
+        content: pub.content,
+        // On ne met pas pub.user
+      })),
+    }));
+  }
+
+  async findOneBy(where: Partial<User>): Promise<any> {
+    const user = await super.findOneBy(where, ['publications']);
+    if (!user) return null;
+
+    // On retourne l'utilisateur sans le champ user dans chaque publication
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      publications: user.publications.map((pub) => ({
+        id: pub.id,
+        title: pub.title,
+        content: pub.content,
+        // On ne met pas pub.user
+      })),
+    };
+  }
+
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<{ message: string; user: User }> {
@@ -62,7 +95,6 @@ export class UsersService extends BaseService<User> {
     if (!user) {
       throw new ConflictException(`User with id ${id} does not exist`);
     }
-
     await this.delete(id);
     return { message: 'User deleted successfully' };
   }
