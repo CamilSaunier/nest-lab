@@ -40,7 +40,15 @@ export class UsersService extends BaseService<User> {
   async findOneBy(where: Partial<User>): Promise<any> {
     const user = await super.findOneBy(where, ['publications']);
     if (!user) {
-      throw new NotFoundException(`user with id ${where.id} does not exist`);
+      if (where.email) {
+        throw new NotFoundException(
+          `user with email ${where.email} does not exist`,
+        );
+      }
+      if (where.id) {
+        throw new NotFoundException(`user with id ${where.id} does not exist`);
+      }
+      throw new NotFoundException(`user not found`);
     }
 
     // On retourne l'utilisateur sans le champ user dans chaque publication
@@ -60,7 +68,7 @@ export class UsersService extends BaseService<User> {
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<{ message: string; user: User }> {
-    const existing = await this.findOneBy({
+    const existing = await this.userRepository.findOneBy({
       email: createUserDto.email,
     });
     if (existing) {
@@ -73,11 +81,9 @@ export class UsersService extends BaseService<User> {
     user.name = createUserDto.name;
     user.email = createUserDto.email;
     user.password = hashedPassword;
-    // initialisation des publications à un tableau vide l'utilisateur n'en a pas au moment de sa création
     user.publications = [];
 
     const createdUser = await this.create(user);
-
     return { message: 'User created successfully', user: createdUser };
   }
 

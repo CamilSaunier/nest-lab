@@ -15,6 +15,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ default: 'member' })
+  role: string;
+
   @OneToMany(() => Publication, (publication: Publication) => publication.user)
   publications: Publication[];
 }

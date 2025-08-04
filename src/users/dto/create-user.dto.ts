@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MinLength,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'Le nom est obligatoire.' })
@@ -21,6 +28,10 @@ export class CreateUserDto {
     message: 'Le mot de passe doit contenir un caractère spécial.',
   })
   password: string;
+
+  @IsOptional()
+  @IsString()
+  role?: string;
 }
 //DTO pour Data Transfer Object, utilisé pour valider les données entrantes
 //IsEmail, IsNotEmpty, Matches et MinLength sont des décorateurs de validation de class-validator

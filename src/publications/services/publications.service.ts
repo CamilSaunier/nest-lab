@@ -105,8 +105,9 @@ export class PublicationsService extends BaseService<Publication> {
   }
 
   async deletePublication(id: number): Promise<void> {
-    if (!id) {
-      throw new NotFoundException(`Publication id is required for deletion`);
+    const publication = await this.findOneBy({ id });
+    if (!publication) {
+      throw new NotFoundException(`Publication with id ${id} does not exist`);
     }
     await this.delete(id);
   }
