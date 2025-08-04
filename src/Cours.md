@@ -15,19 +15,30 @@
 5. Controllers
    Exposent les routes HTTP : reçoivent les requêtes, appellent les services, retournent les réponses.
 
-[Client HTTP]
+[Client HTTP] ← (Exemple : navigateur, Postman, front-end)
 │
 ▼
-[Controller] ──> [DTO validation]
+[Controller] ← (Reçoit la requête, définit la route, appelle le service)
 │
 ▼
-[Service]
+[DTO Validation] ← (Valide et typpe les données reçues, protège l’application)
 │
 ▼
-[Repository]
+[Service] ← (Contient la logique métier, vérifie les règles, manipule les entités)
 │
 ▼
-[Entity]
+[Repository] ← (Interface TypeORM pour accéder à la base, ex : find, save, delete)
 │
 ▼
-[Base de données]
+[Entity] ← (Représente la table en base, structure les données)
+│
+▼
+[Base de données] ← (Stocke et retourne les données réelles)
+
+Client HTTP : C’est l’utilisateur ou une application qui envoie une requête (GET, POST, etc.).
+Controller : C’est le point d’entrée du backend, il reçoit la requête et appelle le bon service.
+DTO Validation : Les données reçues sont validées (types, formats, champs obligatoires) pour éviter les erreurs et les failles.
+Service : C’est ici que la logique métier s’applique (ex : vérifier l’unicité d’un email, hasher un mot de passe).
+Repository : Fournit les méthodes pour interagir avec la base (find, save, update, delete).
+Entity : Définit la structure des données (modèle objet, correspond à une table).
+Base de données : Stocke les données, les récupère ou les modifie selon la requête.

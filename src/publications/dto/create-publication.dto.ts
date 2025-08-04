@@ -1,5 +1,15 @@
+import { IsNotEmpty, IsString, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
+
 export class CreatePublicationDto {
+  @IsNotEmpty()
+  @IsString()
   title: string;
+  @IsNotEmpty()
+  @IsString()
   content: string;
-  userId: number; // l’id du user qui crée la publication
+  @IsNotEmpty()
+  @IsInt()
+  @Type(() => Number)
+  userId: number;
 }

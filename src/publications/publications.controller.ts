@@ -1,5 +1,5 @@
-import { Controller, Post } from '@nestjs/common';
-import { Publication } from './entities/publication.entity';
+import { Controller, Post, Body } from '@nestjs/common';
+import { CreatePublicationDto } from './dto/create-publication.dto';
 import { PublicationsService } from './services/publications.service';
 
 @Controller('publications')
@@ -7,11 +7,7 @@ export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
   @Post()
-  createPublication(
-    title: string,
-    content: string,
-    userId: number,
-  ): Promise<Publication> {
-    return this.publicationsService.createPublication(title, content, userId);
+  async create(@Body() dto: CreatePublicationDto) {
+    return this.publicationsService.createPublication(dto);
   }
 }
