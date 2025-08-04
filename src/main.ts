@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // ignore les propriétés non définies dans le DTO
-      forbidNonWhitelisted: true, // renvoie une erreur si des propriétés non définies
+      forbidNonWhitelisted: true, // renvoie une erreur si des propriétés non définies dans le DTO sont présentes
       transform: true, // transforme les données entrantes en instances de classe
     }),
   );

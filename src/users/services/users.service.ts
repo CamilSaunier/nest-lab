@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { hashPassword } from 'src/utils/password.utils';
 import { CreateUserDto } from '../dto/create-user.dto'; // ton DTO de création
@@ -17,6 +21,9 @@ export class UsersService extends BaseService<User> {
 
   async findAll(): Promise<any[]> {
     const users = await super.findAll(['publications']);
+    if (!users) {
+      throw new NotFoundException(`No users found`);
+    }
     return users.map((user) => ({
       id: user.id,
       name: user.name,
@@ -32,7 +39,9 @@ export class UsersService extends BaseService<User> {
 
   async findOneBy(where: Partial<User>): Promise<any> {
     const user = await super.findOneBy(where, ['publications']);
-    if (!user) return null;
+    if (!user) {
+      throw new NotFoundException(`user with id ${where.id} does not exist`);
+    }
 
     // On retourne l'utilisateur sans le champ user dans chaque publication
     return {
@@ -93,7 +102,7 @@ export class UsersService extends BaseService<User> {
   async deleteUser(id: number): Promise<{ message: string }> {
     const user = await this.findOneBy({ id });
     if (!user) {
-      throw new ConflictException(`User with id ${id} does not exist`);
+      throw new NotFoundException(`User with id ${id} does not exist`);
     }
     await this.delete(id);
     return { message: 'User deleted successfully' };
