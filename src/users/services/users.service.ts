@@ -14,10 +14,11 @@ export class UsersService extends BaseService<User> {
   ) {
     super(userRepository);
   }
+
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<{ message: string; user: User }> {
-    const existing = await this.userRepository.findOneBy({
+    const existing = await this.findOneBy({
       email: createUserDto.email,
     });
     if (existing) {
@@ -26,20 +27,23 @@ export class UsersService extends BaseService<User> {
       );
     }
     const hashedPassword = await hashPassword(createUserDto.password);
-    const user = this.userRepository.create({
-      ...createUserDto,
-      password: hashedPassword,
-    });
-    await this.userRepository.save(user);
+    const user = new User();
+    user.name = createUserDto.name;
+    user.email = createUserDto.email;
+    user.password = hashedPassword;
+    // initialisation des publications à un tableau vide l'utilisateur n'en a pas au moment de sa création
+    user.publications = [];
 
-    return { message: 'User created successfully', user };
+    const createdUser = await this.create(user);
+
+    return { message: 'User created successfully', user: createdUser };
   }
 
   async updateUser(
     id: number,
     updateUserDto: Partial<CreateUserDto>,
   ): Promise<{ message: string; user: User }> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.findOneBy({ id });
     if (!user) {
       throw new ConflictException(`User with id ${id} does not exist`);
     }
@@ -49,17 +53,17 @@ export class UsersService extends BaseService<User> {
     // Object.assign copie les propriété présentes dans updatesDTO vers l'objet user récupéré depuis la base
     // donc il met à jour les champs que l'utilisateur a voulu modifier
     Object.assign(user, updateUserDto);
-    await this.userRepository.save(user);
+    await this.repository.save(user);
     return { message: 'User updated successfully', user };
   }
 
   async deleteUser(id: number): Promise<{ message: string }> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.findOneBy({ id });
     if (!user) {
       throw new ConflictException(`User with id ${id} does not exist`);
     }
 
-    await this.userRepository.delete(id);
+    await this.delete(id);
     return { message: 'User deleted successfully' };
   }
 }

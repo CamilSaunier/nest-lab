@@ -8,11 +8,26 @@ export class BaseService<T extends ObjectLiteral> {
   //peut être n'importe quel objet littéral, comme une entité TypeORM.
   constructor(protected readonly repository: Repository<T>) {}
 
-  findAll(): Promise<T[]> {
+  async findAll(): Promise<T[]> {
     return this.repository.find();
   }
 
-  findOne(id: number): Promise<T | null> {
+  async findOne(id: number): Promise<T | null> {
     return this.repository.findOneBy({ id } as unknown as FindOptionsWhere<T>);
+  }
+  async findOneBy(where: FindOptionsWhere<T>): Promise<T | null> {
+    return this.repository.findOneBy(where);
+  }
+
+  async create(entity: T): Promise<T> {
+    return this.repository.save(entity);
+  }
+
+  async update(id: number, entity: Partial<T>): Promise<T> {
+    return this.repository.save({ ...entity, id } as unknown as T);
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.repository.delete(id);
   }
 }

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Publication } from '../../publications/entities/publication.entity';
 
 @Entity('users')
 export class User {
@@ -13,6 +14,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Publication, (publication: Publication) => publication.user)
+  publications: Publication[];
 }
 
 // Entity est l'entité qui représente la table "users" dans la base de données.
